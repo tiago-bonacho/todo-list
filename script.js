@@ -46,17 +46,23 @@ function mostrarTarefas() {
 
     grupoTarefas.forEach(function(tarefa) {
 
+        const itemTarefa = document.createElement("div");
+
         const tituloTarefa = document.createElement("p");
         tituloTarefa.textContent = tarefa.titulo;
-        apresentarTarefas.appendChild(tituloTarefa);
+        itemTarefa.appendChild(tituloTarefa);
 
         const botaoEliminar = document.createElement("button");
         botaoEliminar.textContent = `Eliminar`;
-        apresentarTarefas.appendChild(botaoEliminar);
+        itemTarefa.appendChild(botaoEliminar);
 
         const botaoConcluirRetomar = document.createElement("button");
         botaoConcluirRetomar.textContent = "Concluir";
-        apresentarTarefas.appendChild(botaoConcluirRetomar);
+        itemTarefa.appendChild(botaoConcluirRetomar);
+
+        const botaoEditar = document.createElement("button");
+        botaoEditar.textContent = "Editar";
+        itemTarefa.appendChild(botaoEditar);
 
         // Botão Concluir/Retomar
 
@@ -95,6 +101,61 @@ function mostrarTarefas() {
             botaoConcluirRetomar.textContent = "Concluir";
             tituloTarefa.classList.remove("concluida");
         }
+
+        // Botão Editar
+
+        botaoEditar.addEventListener("click", function() {
+
+            const entradaEditar = document.createElement("input");
+            entradaEditar.value = tarefa.titulo;
+            itemTarefa.appendChild(entradaEditar);
+
+            const botaoConfirmarEdicao = document.createElement("button");
+            botaoConfirmarEdicao.textContent = "Confirmar edição";
+            itemTarefa.appendChild(botaoConfirmarEdicao);
+
+            const botaoCancelarEdicao = document.createElement("button");
+            botaoCancelarEdicao.textContent = "Cancelar edição";
+            itemTarefa.appendChild(botaoCancelarEdicao);
+
+            // Botão Confirmar Edição
+
+            botaoConfirmarEdicao.addEventListener("click", function () {
+
+                if(entradaEditar.value.trim() === "") {
+                    alert("O campo de tarefa não pode ficar em branco");
+                    return;
+                }
+
+                if(entradaEditar.value.trim().length < 3) {
+                    alert("Insira uma tarefa com mais do que 2 caracteres");
+                    return;
+                }
+
+                if(entradaEditar.value.trim() === tarefa.titulo) {
+                    alert("O novo nome não pode ser igual ao anterior");
+                    return;
+                }
+                
+                tarefa.titulo = entradaEditar.value.trim();
+
+                mostrarTarefas();
+            })
+
+            botaoEditar.disabled = true;
+
+            // Botão cancelar edição
+
+            botaoCancelarEdicao.addEventListener("click", function() {
+
+                entradaEditar.remove();
+                botaoConfirmarEdicao.remove();
+                botaoCancelarEdicao.remove();
+                botaoEditar.disabled = false;
+            })
+        })
+
+        apresentarTarefas.appendChild(itemTarefa);
     })
 }
 
