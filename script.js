@@ -1,11 +1,31 @@
 const formulario = document.getElementById("formulario");
 const entradaTarefa = document.getElementById("entradaTarefa");
-const botaoAdicionar = document.getElementById("botaoAdicionar");
 const apresentarTarefas = document.getElementById("apresentarTarefas");
 
 
+const obterTarefas = localStorage.getItem("grupoTarefas");
+
 let grupoTarefas = [];
 let idInicial = 1;
+
+if (obterTarefas !== null) {
+
+    grupoTarefas = JSON.parse(obterTarefas);
+
+    grupoTarefas.forEach(function(tarefa) {
+        if (tarefa.id >= idInicial) {
+            idInicial = tarefa.id + 1;
+        }
+    })
+
+    mostrarTarefas();
+
+} else {
+
+    grupoTarefas = [];
+
+}
+
 
 // Inserir tarefas e validação de entradas
 
@@ -30,6 +50,8 @@ formulario.addEventListener("submit", function(event) {
     }
 
     grupoTarefas.push(tarefa);
+
+    enviarParaLocalStorage();
 
     mostrarTarefas();
 
@@ -69,6 +91,8 @@ function mostrarTarefas() {
         botaoConcluirRetomar.addEventListener("click", function() {
             
             tarefa.concluida = !tarefa.concluida;
+
+            enviarParaLocalStorage();
 
             if(tarefa.concluida === true) {
 
@@ -139,6 +163,8 @@ function mostrarTarefas() {
                 
                 tarefa.titulo = entradaEditar.value.trim();
 
+                enviarParaLocalStorage();
+
                 mostrarTarefas();
             })
 
@@ -167,5 +193,21 @@ function eliminar(id) {
         return tarefa.id !== id;
     })
 
+    enviarParaLocalStorage();
+
     mostrarTarefas();
 }
+
+
+
+function enviarParaLocalStorage () {
+
+    const grupoTarefasString = JSON.stringify(grupoTarefas);
+
+    localStorage.setItem("grupoTarefas", grupoTarefasString);
+
+}
+
+
+
+
